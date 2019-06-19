@@ -10,7 +10,6 @@ abrirURL(ScanModel scanModel, BuildContext context) async {
       throw 'No se puede abriir ${scanModel.valor}';
     }
   } else {
-    Navigator.pushNamed(context, "mapa", arguments: scanModel.valor);
-    print("mapita");
+    Navigator.pushNamed(context, "mapa", arguments: scanModel);
   }
 }
