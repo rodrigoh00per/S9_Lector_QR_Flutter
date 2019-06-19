@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:s9_qrscannerapp/src/bloc/scans_bloc.dart';
 import 'package:s9_qrscannerapp/src/models/scan_model.dart';
 import 'package:s9_qrscannerapp/src/pages/direcciones_page.dart';
 import 'package:s9_qrscannerapp/src/pages/mapas_page.dart';
+import 'package:s9_qrscannerapp/src/utils/utils.dart' as utils;
 
 /* import 'package:qrcode_reader/qrcode_reader.dart'; */
 
@@ -31,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          this._scanQR();
+          this._scanQR(context);
         },
         child: Icon(Icons.camera),
         backgroundColor: Theme.of(context).primaryColor,
@@ -67,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _scanQR() async {
+  void _scanQR(BuildContext context) async {
     //https://www.xataka.com.mx/
     //geo:19.439236181963764,-99.11794081171877
 
@@ -86,6 +89,19 @@ class _HomePageState extends State<HomePage> {
       final scan = ScanModel(valor: futureString);
 
       this._scansBloc.agregarScan(scan);
+
+      String futureS = "geo:19.439236181963764,-99.11794081171877";
+      final scan2 = ScanModel(valor: futureS);
+
+      this._scansBloc.agregarScan(scan2);
+
+      if (Platform.isIOS) {
+        Future.delayed(Duration(milliseconds: 750), () {
+          utils.abrirURL(scan, context);
+        });
+      } else {
+        utils.abrirURL(scan, context);
+      }
     }
   }
 }

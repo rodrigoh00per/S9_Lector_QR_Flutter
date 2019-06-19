@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:s9_qrscannerapp/src/bloc/scans_bloc.dart';
 import 'package:s9_qrscannerapp/src/models/scan_model.dart';
-
+import 'package:s9_qrscannerapp/src/utils/utils.dart' as utils;
 
 class MapasPage extends StatelessWidget {
   final _scansBloc = ScansBloc();
@@ -22,6 +22,7 @@ class MapasPage extends StatelessWidget {
             child: Text("No hay registros a mostrar en estos momentos"),
           ));
         }
+
         return ListView.builder(
           itemCount: scans.length,
           itemBuilder: (BuildContext context, int i) {
@@ -48,6 +49,9 @@ class MapasPage extends StatelessWidget {
                 title: Text(scans[i].valor),
                 subtitle: Text("${scans[i].id}"),
                 trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  utils.abrirURL(scans[i], context);
+                },
               ),
             );
           },
