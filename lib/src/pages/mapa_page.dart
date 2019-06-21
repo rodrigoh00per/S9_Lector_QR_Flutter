@@ -2,27 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:s9_qrscannerapp/src/models/scan_model.dart';
 
-class MapaPage extends StatelessWidget {
+class MapaPage extends StatefulWidget {
+  @override
+  _MapaPageState createState() => _MapaPageState();
+}
+
+class _MapaPageState extends State<MapaPage> {
+  final List tipodeMapa = ["light", "dark", "streets", "outdoors", "satellite"];
+  int numMapa = 2;
+
+  final map = new MapController();
+
   @override
   Widget build(BuildContext context) {
-    final scan = ModalRoute.of(context).settings.arguments;
+    final ScanModel scan = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-        appBar: AppBar(
-          title: Center(child: Text("Coordenadas QR")),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.location_searching),
-            )
-          ],  
+      appBar: AppBar(
+        title: Center(child: Text("Coordenadas QR")),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              this.map.move(scan.getLatLong(), 15);
+            },
+            icon: Icon(Icons.location_searching),
+          )
+        ],
+      ),
+      body: _crearFlutterMap(scan),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.autorenew,
         ),
-        body: _crearFlutterMap(scan));
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
+          setState(() {
+            if (this.numMapa == 4) {
+              this.numMapa = 0;
+            } else {
+              this.numMapa++;
+            }
+          });
+        },
+      ),
+    );
   }
 
   _crearFlutterMap(ScanModel scan) {
     return FlutterMap(
+      mapController: map,
       options: MapOptions(
-          zoom: 100, center: scan.getLatLong()), //en donde se localizara el mapa
+          zoom: 15, center: scan.getLatLong()), //en donde se localizara el mapa
       layers: [_crearMapa(), _crearMarcadores(scan)],
     );
   }
@@ -36,7 +65,7 @@ class MapaPage extends StatelessWidget {
         additionalOptions: {
           "accessToken":
               "pk.eyJ1Ijoicm9kcmlnb2gwMHBlciIsImEiOiJjangycXg1NWUwMXIxNDVvNXI2YWplaGxuIn0.Aq8QYqFvQqF0adHfFGMHsA",
-          "id": "mapbox.streets"
+          "id": "mapbox.${this.tipodeMapa[this.numMapa]}"
           //light,dark,streets,outdoors,satellite
         });
   }
